@@ -22,7 +22,7 @@ data "aws_ami" "latest_amazon2_ami" {
 resource "aws_security_group" "tflearn_sg" {
   name        = "tflearn_sg"
   description = "TF Learn 03 security group"
-  vpc_id      = resource.aws_vpc.tf_vpc01.id
+  vpc_id      = aws_vpc.tf_vpc01.id
 
   ingress {
     description = "SSH"
@@ -84,7 +84,7 @@ resource "aws_vpc" "tf_vpc01" {
 }
 
 resource "aws_subnet" "tflearn_subnet01_pub" {
-  vpc_id = resource.aws_vpc.tf_vpc01.id
+  vpc_id = aws_vpc.tf_vpc01.id
   cidr_block = var.subnet_cidr_block_pub
 
   tags = {
@@ -96,7 +96,7 @@ resource "aws_subnet" "tflearn_subnet01_pub" {
 
 
 resource "aws_subnet" "tflearn_subnet02_pvt" {
-  vpc_id = resource.aws_vpc.tf_vpc01.id
+  vpc_id = aws_vpc.tf_vpc01.id
   cidr_block = var.subnet_cidr_block_pvt
 
   tags = {
@@ -107,9 +107,9 @@ resource "aws_subnet" "tflearn_subnet02_pvt" {
 
 
 resource "aws_instance" "webserver01" {
-  ami = data.aws_ami.latest_amazon2_ami
+  ami = data.aws_ami.latest_amazon2_ami.id
   instance_type = var.instance_type
-  subnet_id = resource.aws_subnet.tflearn_subnet01_pub.id
+  subnet_id = aws_subnet.tflearn_subnet01_pub.id
   vpc_security_group_ids = [ "resource.aws_security_group.tflearn_sg.id" ]
   availability_zone = var.avail_zone
   associate_public_ip_address = false
